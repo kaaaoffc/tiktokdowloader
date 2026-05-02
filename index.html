@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TikTok Downloader</title>
+
+<style>
+body{
+  background:#0f172a;
+  color:white;
+  font-family:Arial;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+  margin:0;
+}
+
+.box{
+  width:90%;
+  max-width:500px;
+  background:#111827;
+  padding:20px;
+  border-radius:20px;
+}
+
+input{
+  width:100%;
+  padding:15px;
+  border:none;
+  border-radius:12px;
+  margin-top:10px;
+  background:#1e293b;
+  color:white;
+}
+
+button{
+  width:100%;
+  padding:15px;
+  border:none;
+  border-radius:12px;
+  margin-top:10px;
+  background:#7c3aed;
+  color:white;
+  font-weight:bold;
+}
+
+.result{
+  display:none;
+  margin-top:20px;
+}
+
+img{
+  width:100%;
+  border-radius:15px;
+}
+</style>
+</head>
+<body>
+
+<div class="box">
+
+<h2>🎵 TikTok Downloader</h2>
+
+<input
+type="text"
+id="url"
+placeholder="Tempel link TikTok..."
+>
+
+<button onclick="downloadTT()">
+Download
+</button>
+
+<div class="result" id="result">
+
+<img id="thumb">
+
+<h3 id="title"></h3>
+
+<button onclick="window.open(videoUrl)">
+📥 Download Video
+</button>
+
+<button onclick="window.open(mp3Url)">
+🎧 Download MP3
+</button>
+
+</div>
+
+</div>
+
+<script>
+
+let videoUrl = "";
+let mp3Url = "";
+
+async function downloadTT(){
+
+  const url =
+    document.getElementById("url").value;
+
+  const res =
+    await fetch(
+      `/api/tiktok?url=${encodeURIComponent(url)}`
+    );
+
+  const json =
+    await res.json();
+
+  console.log(json);
+
+  videoUrl =
+    json.download.nowm;
+
+  mp3Url =
+    json.download.mp3;
+
+  document.getElementById("thumb").src =
+    json.cover;
+
+  document.getElementById("title").innerText =
+    json.title;
+
+  document.getElementById("result").style.display =
+    "block";
+
+}
+
+</script>
+
+</body>
+</html>
