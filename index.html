@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TikTok Downloader</title>
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial,sans-serif;
+    }
+
+    body{
+      background:#0f172a;
+      color:white;
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      padding:20px;
+    }
+
+    .container{
+      width:100%;
+      max-width:500px;
+      background:#111827;
+      border-radius:20px;
+      padding:25px;
+      box-shadow:0 0 20px rgba(0,0,0,.5);
+    }
+
+    h1{
+      text-align:center;
+      margin-bottom:10px;
+      font-size:28px;
+      color:#8b5cf6;
+    }
+
+    p{
+      text-align:center;
+      color:#cbd5e1;
+      margin-bottom:25px;
+    }
+
+    input{
+      width:100%;
+      padding:15px;
+      border:none;
+      border-radius:12px;
+      outline:none;
+      background:#1e293b;
+      color:white;
+      margin-bottom:15px;
+      font-size:15px;
+    }
+
+    button{
+      width:100%;
+      padding:15px;
+      border:none;
+      border-radius:12px;
+      background:linear-gradient(45deg,#7c3aed,#9333ea);
+      color:white;
+      font-size:16px;
+      font-weight:bold;
+      cursor:pointer;
+      transition:.2s;
+    }
+
+    button:hover{
+      opacity:.9;
+      transform:scale(1.02);
+    }
+
+    .result{
+      margin-top:25px;
+      display:none;
+      animation:fade .3s ease;
+    }
+
+    @keyframes fade{
+      from{
+        opacity:0;
+        transform:translateY(10px);
+      }
+      to{
+        opacity:1;
+        transform:translateY(0);
+      }
+    }
+
+    .thumb{
+      width:100%;
+      border-radius:15px;
+      margin-bottom:15px;
+    }
+
+    .title{
+      font-size:18px;
+      margin-bottom:15px;
+      text-align:center;
+    }
+
+    .info{
+      background:#1e293b;
+      padding:12px;
+      border-radius:12px;
+      margin-bottom:15px;
+      line-height:1.8;
+      color:#e2e8f0;
+    }
+
+    .download-btn{
+      display:block;
+      text-decoration:none;
+      text-align:center;
+      padding:14px;
+      border-radius:12px;
+      margin-top:10px;
+      font-weight:bold;
+      transition:.2s;
+    }
+
+    .video-btn{
+      background:#22c55e;
+      color:white;
+    }
+
+    .mp3-btn{
+      background:#f59e0b;
+      color:white;
+    }
+
+    .loading{
+      text-align:center;
+      margin-top:15px;
+      display:none;
+      color:#cbd5e1;
+    }
+
+    footer{
+      text-align:center;
+      margin-top:20px;
+      color:#64748b;
+      font-size:13px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>🎵 TikTok Downloader</h1>
+  <p>Download Video TikTok No Watermark & MP3</p>
+
+  <input type="text" id="url" placeholder="Masukkan link TikTok..." />
+
+  <button onclick="downloadTikTok()">🚀 Download</button>
+
+  <div class="loading" id="loading">
+    Sedang memproses...
+  </div>
+
+  <div class="result" id="result">
+    <img id="thumb" class="thumb">
+
+    <div class="title" id="title"></div>
+
+    <div class="info">
+      👤 Author: <span id="author"></span><br>
+      ❤️ Likes: <span id="likes"></span><br>
+      💬 Comment: <span id="comments"></span><br>
+      🔁 Share: <span id="shares"></span>
+    </div>
+
+    <a id="video" class="download-btn video-btn" target="_blank">
+      📥 Download Video No WM
+    </a>
+
+    <a id="mp3" class="download-btn mp3-btn" target="_blank">
+      🎧 Download MP3
+    </a>
+  </div>
+
+  <footer>
+    Powered by NexRay API
+  </footer>
+</div>
+
+<script>
+async function downloadTikTok() {
+  const url = document.getElementById("url").value.trim();
+
+  if (!url) {
+    alert("Masukkan link TikTok dulu!");
+    return;
+  }
+
+  const loading = document.getElementById("loading");
+  const result = document.getElementById("result");
+
+  loading.style.display = "block";
+  result.style.display = "none";
+
+  try {
+    const api = `https://api.nexray.eu.cc/downloader/tiktok?url=${encodeURIComponent(url)}`;
+
+    const res = await fetch(api);
+    const json = await res.json();
+
+    if (!json.status) {
+      alert("Gagal mengambil video!");
+      loading.style.display = "none";
+      return;
+    }
+
+    const data = json.result;
+
+    document.getElementById("thumb").src = data.author.avatar;
+    document.getElementById("title").innerText = data.title;
+    document.getElementById("author").innerText = data.author.nickname;
+    document.getElementById("likes").innerText = data.stats.likes;
+    document.getElementById("comments").innerText = data.stats.comment;
+    document.getElementById("shares").innerText = data.stats.share;
+
+    document.getElementById("video").href = data.cover ? data.video : data.url;
+    document.getElementById("mp3").href = data.music.url;
+
+    loading.style.display = "none";
+    result.style.display = "block";
+
+  } catch (err) {
+    loading.style.display = "none";
+    alert("Terjadi error!");
+    console.log(err);
+  }
+}
+</script>
+
+</body>
+</html>
