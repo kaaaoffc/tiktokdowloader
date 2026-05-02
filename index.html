@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>TikTok Downloader - Tanpa Watermark & MP3</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, 'Roboto', sans-serif;
+      background: linear-gradient(145deg, #0f172a 0%, #111827 100%);
+      color: #f1f5f9;
+      padding: 1.5rem;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      max-width: 600px;
+      width: 100%;
+      margin: 0 auto;
+      background: rgba(30, 41, 59, 0.7);
+      backdrop-filter: blur(2px);
+      border-radius: 2rem;
+      padding: 1.8rem 1.5rem 2rem;
+      box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(139, 92, 246, 0.2);
+      transition: all 0.2s ease;
+    }
+
+    /* Banner WhatsApp */
+    .wa-banner {
+      background: linear-gradient(95deg, #075e54, #128c7e);
+      border-radius: 60px;
+      padding: 10px 20px;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
+      transition: transform 0.2s;
+    }
+
+    .wa-banner:hover {
+      transform: scale(1.01);
+    }
+
+    .wa-text {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      letter-spacing: 0.3px;
+    }
+
+    .wa-text span:first-child {
+      background: white;
+      color: #075e54;
+      border-radius: 50px;
+      padding: 4px 10px;
+      font-size: 0.8rem;
+    }
+
+    .wa-link {
+      background: #25d366;
+      color: #0f2b1f;
+      padding: 6px 18px;
+      border-radius: 40px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: 0.2s;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .wa-link:hover {
+      background: #20b859;
+      transform: translateY(-2px);
+      color: white;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #c084fc, #a78bfa);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 0.5rem;
+      text-align: center;
+      letter-spacing: -0.3px;
+    }
+
+    .sub {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #94a3b8;
+      margin-bottom: 2rem;
+      border-bottom: 1px dashed #334155;
+      display: inline-block;
+      width: auto;
+      margin-left: auto;
+      margin-right: auto;
+      padding-bottom: 6px;
+    }
+
+    .input-group {
+      margin: 1.2rem 0;
+    }
+
+    input {
+      width: 100%;
+      padding: 1rem 1.2rem;
+      border: none;
+      border-radius: 1.5rem;
+      background: #1e293b;
+      color: white;
+      font-size: 1rem;
+      outline: none;
+      transition: 0.2s;
+      box-shadow: inset 0 1px 3px #00000030, 0 1px 0 #334155;
+    }
+
+    input:focus {
+      background: #0f172a;
+      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.5);
+    }
+
+    button {
+      width: 100%;
+      padding: 0.9rem;
+      border: none;
+      border-radius: 2rem;
+      background: linear-gradient(100deg, #7c3aed, #a855f7);
+      color: white;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.25s;
+      box-shadow: 0 8px 14px -8px #5b21b6;
+      margin-top: 0.5rem;
+    }
+
+    button:hover {
+      background: linear-gradient(100deg, #8b5cf6, #c084fc);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 20px -10px #7c3aed;
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    .loading {
+      display: none;
+      text-align: center;
+      margin: 1.5rem 0;
+      font-weight: 500;
+      color: #c084fc;
+      gap: 10px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .loading.show {
+      display: flex;
+    }
+
+    .spinner {
+      width: 24px;
+      height: 24px;
+      border: 3px solid #334155;
+      border-top: 3px solid #c084fc;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    #result {
+      display: none;
+      margin-top: 2rem;
+      background: rgba(15, 23, 42, 0.7);
+      border-radius: 1.5rem;
+      padding: 1.2rem;
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      animation: fadeUp 0.4s ease;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(15px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    #thumb {
+      width: 100%;
+      border-radius: 1rem;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      box-shadow: 0 10px 20px -5px black;
+      margin-bottom: 1rem;
+      background: #0f172a;
+    }
+
+    #title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin: 0.8rem 0 1.2rem 0;
+      text-align: center;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      color: #e2e8f0;
+    }
+
+    .button-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1.5px solid #8b5cf6;
+      box-shadow: none;
+      color: #ddd6fe;
+    }
+
+    .btn-outline:hover {
+      background: #8b5cf630;
+      border-color: #c084fc;
+      color: white;
+    }
+
+    .error-msg {
+      background: #991b1b80;
+      border-left: 5px solid #f87171;
+      padding: 12px;
+      border-radius: 16px;
+      margin-top: 1rem;
+      font-size: 0.85rem;
+      text-align: center;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.7rem;
+      margin-top: 2rem;
+      color: #5b6e8c;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 1.2rem;
+      }
+      .wa-text {
+        font-size: 0.75rem;
+      }
+      .wa-link {
+        padding: 4px 12px;
+        font-size: 0.75rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Banner WhatsApp sesuai permintaan -->
+  <div class="wa-banner">
+    <div class="wa-text">
+      <span>📢</span>
+      <span>JOIN SALURAN WHATSAPP UNTUK MENDAPATKAN INFO!</span>
+    </div>
+    <a href="https://whatsapp.com/channel/0029Vb5qobZA89MaSAVxyx3J" class="wa-link" target="_blank" rel="noopener noreferrer">
+      ✨ klik di sini ✨
+    </a>
+  </div>
+
+  <h2>🎵 TikTok Downloader</h2>
+  <div style="text-align: center;">
+    <div class="sub">Tanpa watermark • Video & MP3</div>
+  </div>
+
+  <div class="input-group">
+    <input type="text" id="url" placeholder="Tempelkan link TikTok disini... (contoh: https://www.tiktok.com/@user/video/123456789)" autocomplete="off">
+  </div>
+  <button id="searchBtn">🔍 Cari & Proses</button>
+
+  <div class="loading" id="loadingIndicator">
+    <div class="spinner"></div>
+    <span>Memproses video TikTok...</span>
+  </div>
+
+  <div id="result">
+    <img id="thumb" alt="Thumbnail video">
+    <h3 id="title"></h3>
+    <div class="button-group">
+      <button id="downloadVideoBtn" class="btn-primary">📥 Download Video (No WM)</button>
+      <button id="downloadMp3Btn" class="btn-outline">🎧 Download MP3 (Audio)</button>
+    </div>
+  </div>
+  <footer>
+    ⚡ Membutuhkan backend proxy • Gunakan dengan bijak
+  </footer>
+</div>
+
+<script>
+  let currentVideoUrl = "";
+  let currentMp3Url = "";
+
+  const urlInput = document.getElementById('url');
+  const searchBtn = document.getElementById('searchBtn');
+  const resultDiv = document.getElementById('result');
+  const thumbImg = document.getElementById('thumb');
+  const titleEl = document.getElementById('title');
+  const downloadVideoBtn = document.getElementById('downloadVideoBtn');
+  const downloadMp3Btn = document.getElementById('downloadMp3Btn');
+  const loadingIndicator = document.getElementById('loadingIndicator');
+
+  function showErrorMessage(msg) {
+    const oldError = document.querySelector('.error-msg');
+    if(oldError) oldError.remove();
+    
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'error-msg';
+    errorDiv.innerText = `❌ ${msg}`;
+    const container = document.querySelector('.container');
+    const result = document.getElementById('result');
+    container.insertBefore(errorDiv, result.nextSibling || result);
+    
+    setTimeout(() => {
+      if(errorDiv && errorDiv.remove) errorDiv.remove();
+    }, 5000);
+  }
+
+  function resetUI() {
+    const err = document.querySelector('.error-msg');
+    if(err) err.remove();
+    resultDiv.style.display = 'none';
+    currentVideoUrl = "";
+    currentMp3Url = "";
+  }
+
+  async function searchTT() {
+    const rawUrl = urlInput.value.trim();
+    if (!rawUrl) {
+      showErrorMessage("Masukkan link TikTok terlebih dahulu!");
+      return;
+    }
+
+    if (!rawUrl.includes('tiktok.com') && !rawUrl.includes('vt.tiktok')) {
+      showErrorMessage("Link tidak valid. Pastikan link dari TikTok (contoh: tiktok.com/@user/video/...)");
+      return;
+    }
+
+    resetUI();
+    loadingIndicator.classList.add('show');
+    
+    try {
+      const encodedUrl = encodeURIComponent(rawUrl);
+      const apiEndpoint = `/api/tiktok?url=${encodedUrl}`;
+      const response = await fetch(apiEndpoint);
+      
+      if (!response.ok) {
+        let errorText = `Gagal memproses (HTTP ${response.status})`;
+        if(response.status === 404) errorText = "Endpoint API tidak ditemukan. Pastikan backend proxy berjalan.";
+        else if(response.status === 500) errorText = "Server error: gagal mengambil data TikTok.";
+        throw new Error(errorText);
+      }
+      
+      const json = await response.json();
+      
+      let videoUrl = null;
+      let mp3Url = null;
+      let coverImg = "";
+      let videoTitle = "TikTok Video";
+      
+      if (json && json.download) {
+        videoUrl = json.download.nowm || json.download.wm || json.download.video || null;
+        mp3Url = json.download.mp3 || json.download.music || null;
+      } else if (json && json.video) {
+        videoUrl = json.video;
+        mp3Url = json.audio || json.mp3;
+      } else if (json && json.url) {
+        videoUrl = json.url;
+        mp3Url = json.music || null;
+      }
+      
+      if (!videoUrl && json.result) {
+        videoUrl = json.result.video || json.result.nowm;
+        mp3Url = json.result.audio || json.result.mp3;
+        coverImg = json.result.cover || json.result.thumbnail;
+        videoTitle = json.result.title || json.result.desc || "TikTok";
+      }
+      
+      coverImg = coverImg || json.cover || json.thumbnail || json.thumb || "";
+      videoTitle = videoTitle || json.title || json.desc || "Unduhan TikTok";
+      
+      if (!videoUrl) {
+        throw new Error("Tidak dapat menemukan URL video dari response API. Mungkin struktur API berbeda.");
+      }
+      
+      currentVideoUrl = videoUrl;
+      currentMp3Url = mp3Url || "";
+      
+      thumbImg.src = coverImg || "https://placehold.co/600x400/1e293b/8b5cf6?text=No+Thumbnail";
+      thumbImg.alt = "Thumbnail TikTok";
+      titleEl.innerText = videoTitle.length > 100 ? videoTitle.slice(0, 100) + "..." : videoTitle;
+      
+      resultDiv.style.display = "block";
+      
+      if (!currentMp3Url) {
+        downloadMp3Btn.innerText = "🎵 Audio tidak tersedia";
+        downloadMp3Btn.disabled = true;
+        downloadMp3Btn.style.opacity = "0.6";
+        downloadMp3Btn.style.cursor = "not-allowed";
+      } else {
+        downloadMp3Btn.innerText = "🎧 Download MP3 (Audio)";
+        downloadMp3Btn.disabled = false;
+        downloadMp3Btn.style.opacity = "1";
+      }
+      
+    } catch (err) {
+      let userMsg = err.message || "Gagal mengambil data dari server.";
+      if (err.message.includes("fetch")) {
+        userMsg = "Koneksi gagal. Pastikan backend proxy TikTok tersedia di /api/tiktok. (Butuh server pendukung)";
+      }
+      showErrorMessage(userMsg + " 🔄 Coba lagi atau periksa link.");
+      resultDiv.style.display = "none";
+    } finally {
+      loadingIndicator.classList.remove('show');
+    }
+  }
+  
+  function downloadVideo() {
+    if (!currentVideoUrl) {
+      showErrorMessage("Tidak ada video untuk diunduh. Silakan cari link terlebih dahulu.");
+      return;
+    }
+    const link = document.createElement('a');
+    link.href = currentVideoUrl;
+    link.download = "tiktok_video.mp4";
+    link.target = "_blank";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+  
+  function downloadMp3() {
+    if (!currentMp3Url) {
+      showErrorMessage("File MP3 tidak tersedia untuk video ini.");
+      return;
+    }
+    const link = document.createElement('a');
+    link.href = currentMp3Url;
+    link.download = "tiktok_audio.mp3";
+    link.target = "_blank";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+  
+  searchBtn.addEventListener('click', searchTT);
+  downloadVideoBtn.addEventListener('click', downloadVideo);
+  downloadMp3Btn.addEventListener('click', downloadMp3);
+  
+  urlInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      searchTT();
+    }
+  });
+</script>
+</body>
+  </html>
