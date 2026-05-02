@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>TikTok Downloader</title>
+</head>
+<body>
+
+<input type="text" id="url">
+
+<button onclick="gas()">
+Cari
+</button>
+
+<div id="result" style="display:none;">
+
+<img
+id="thumb"
+width="300"
+>
+
+<h3 id="title"></h3>
+
+<button onclick="downloadVideo()">
+Download Video
+</button>
+
+<button onclick="downloadMp3()">
+Download MP3
+</button>
+
+</div>
+
+<script>
+
+let currentUrl = "";
+
+async function gas(){
+
+  const url =
+    document.getElementById("url").value;
+
+  currentUrl = url;
+
+  const res =
+    await fetch(
+      `/api/tiktok?url=${encodeURIComponent(url)}`
+    );
+
+  const json =
+    await res.json();
+
+  document.getElementById("thumb").src =
+    json.cover;
+
+  document.getElementById("title").innerText =
+    json.title;
+
+  document.getElementById("result").style.display =
+    "block";
+
+}
+
+function downloadVideo(){
+
+  window.location.href =
+    `/api/tiktok?type=video&url=${encodeURIComponent(currentUrl)}`;
+
+}
+
+function downloadMp3(){
+
+  window.location.href =
+    `/api/tiktok?type=mp3&url=${encodeURIComponent(currentUrl)}`;
+
+}
+
+</script>
+
+</body>
+</html>
